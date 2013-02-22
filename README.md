@@ -46,3 +46,29 @@ Minidc ‐ Modelled after the UNIX command line tool “dc”.
 
 Order of TDD should start by exercising valid domain  logic, invalid domain logic, valid input 
 syntax, invalid input syntax and then valid and invalid parameter types and numbers.
+
+To get full marks:
+
+* All tests should have clearly indicated purposes.
+
+* A clear indication should be made showing the test failing before code is added.
+
+* A clear indication should be made showing which code has been added.
+
+* There is a clear indication (strong evidence) that failed test pass after new code is added.
+
+* There is a clear indication (strong evidence) that all previous tests pass after new code is added.
+
+* No invalid input should pass to the program without displaying an error.
+
+* The test progression should be clear.
+
+* The tests are processed in order (ie. logic-syntax-parameters).
+
+* Tests should not be redundant.
+
+* Formatting should be clear and easy to follow.
+
+* Student ID and Name are specified in the submission.
+
+**Note that the assignment is out of 20, but if you accumulate too much malus points you can end at -44**
