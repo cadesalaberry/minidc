@@ -3,19 +3,19 @@
 
 ## Specifications
 
-• Due Feb 24, 2013 (23:59)
-• Group of 2 students
-• Implement the **minidc** application with TDD 
+* Due Feb 24, 2013 (23:59)
+* Group of 2 students
+* Implement the **minidc** application with TDD 
 
 ### Info
 
 Minidc ‐ Modelled after the UNIX command line tool “dc”.
 
-• Minidc is a reverse‐polish desk calculator.   Minidc reads from the standard input.  All normal output is to standard output; all error output is to standard error.
+* Minidc is a reverse‐polish desk calculator.   Minidc reads from the standard input.  All normal output is to standard output; all error output is to standard error.
 
-• A reverse‐polish calculator stores numbers on a stack.  Entering a number pushes it on the stack. Arithmetic operations pop arguments off the stack and push the results.
+* A reverse‐polish calculator stores numbers on a stack.  Entering a number pushes it on the stack. Arithmetic operations pop arguments off the stack and push the results.
 
-• To enter a number in Minidc, type the digits with an optional decimal point. To enter a negative number, begin the number with “_”.  “‐” cannot be used for this, as it is the operator for subtraction instead.
+* To enter a number in Minidc, type the digits with an optional decimal point. To enter a negative number, begin the number with “_”.  “‐” cannot be used for this, as it is the operator for subtraction instead.
 
 
 ###Available commands
