@@ -20,19 +20,26 @@ Minidc ‐ Modelled after the UNIX command line tool “dc”.
 
 ###Available commands
 
-> **P** Prints the value on the top of the stack, without altering the stack.
+	P
+>Prints the value on the top of the stack, without altering the stack.
 
-> **n** Prints the value on the top of the stack, popping it off.
+	n
+>Prints the value on the top of the stack, popping it off.
 
-> **f** Prints the entire contents of the stack without altering anything.
+	f
+>Prints the entire contents of the stack without altering anything.
 
-> **+** Pops two values off the stack, adds them, and pushes the result.
+	+
+>Pops two values off the stack, adds them, and pushes the result.
 
-> **‐** Pops two values off the stack, subtracts the first one popped from the second one popped, and pushes the result.
+	‐
+>Pops two values off the stack, subtracts the first one popped from the second one popped, and pushes the result.
 
-> **"*"** Pops two values, multiplies them, and pushes the result.
+	*
+>Pops two values, multiplies them, and pushes the result.
 
-> **/** Pops two values, divides the second one popped from the first one popped, and pushes the result.
+	/
+>Pops two values, divides the second one popped from the first one popped, and pushes the result.
 
 
 ## Instructions
