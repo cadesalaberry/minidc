@@ -4,8 +4,8 @@
 ## Specifications
 
 • Due Feb 24, 2013 (23:59)
-– Group of 2 students
-– Implement the **minidc** application with TDD 
+• Group of 2 students
+• Implement the **minidc** application with TDD 
 
 ### Info
 
