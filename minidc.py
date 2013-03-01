@@ -81,6 +81,7 @@ def handle_input():
             sys.stderr.write("Unexpected error")
             val_stack = val_stack_old[:]
             cmd_stack = cmd_stack_old[:]
+            return False
     
     # Save the current state of the stack
     val_stack_old = val_stack[:] 
