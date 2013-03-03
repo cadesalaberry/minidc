@@ -4,7 +4,9 @@ Created on 2013-02-23
 @author: J. Berthiaume
 '''
 
+import subprocess
 import sys
+import os
 
 class minidc():
     
@@ -19,11 +21,6 @@ class minidc():
     # Pushes a value onto the appropriate stack. Returns True if there is an error, False otherwise
     def push_value(self, val):
         
-        global val_stack
-        global val_stack_old
-        global cmd_stack
-        global cmd_stack_old
-        
         #If the first character is an underscore, we have a negative number
         if val[0] == '_':
             # Convert to a list so that it is mutable, then add the negative sign and change back to string
@@ -32,29 +29,33 @@ class minidc():
             val = ''.join(val_list)
         
         # If it's a number, add to the value stack. Otherwise, add to the command stack.    
-        try:        
-            val_stack.append(float(val))        
-            return False
+        try:
+            f_val = float(val)       
+            if f_val > sys.maxint or f_val < -sys.maxint:
+                # Error: number out of range
+                error = "Error: number out of range\n"
+                sys.stderr.write(error)
+                self.add_err_to_log(error)
+                return -2
+            else:
+                val_stack.append(f_val)        
+            return 0
         except ValueError:
             if val in valid_commands:
                 # The command is valid
                 cmd_stack.append(val)
-                return False
+                return 0
             else:
                 # The command is invalid: revert the stack to its previous state
-                sys.stderr.write("\nUnknown command: \'%s\' does not exist\n" % val)
-                val_stack = val_stack_old[:]
-                cmd_stack = cmd_stack_old[:]
-                return True
+                error = "Unknown command: \'%s\' does not exist\n" % val
+                sys.stderr.write(error)
+                self.add_err_to_log(error)
+                self.revert_stack()
+                return -1
                 
         
     def handle_input(self):
-        
-        global val_stack
-        global val_stack_old
-        global cmd_stack
-        global cmd_stack_old
-    
+
         # Keep going until the command stack runs out of values
         while cmd_stack: 
             
@@ -71,7 +72,9 @@ class minidc():
                 try:
                     print str(val_stack[-1])    
                 except IndexError:
-                    sys.stderr.write("Error: stack is empty\n")
+                    error = "Error: stack is empty\n"
+                    sys.stderr.write(error)
+                    self.add_err_to_log(error)
                     self.revert_stack()  
                             
             elif curr_cmd == 'n':
@@ -79,7 +82,9 @@ class minidc():
                 try:
                     print str(val_stack.pop()) 
                 except IndexError:
-                    sys.stderr.write("Error: stack is empty\n")
+                    error = "Error: stack is empty\n"
+                    sys.stderr.write(error)
+                    self.add_err_to_log(error)
                     self.revert_stack()     
                              
             elif curr_cmd == 'f':
@@ -91,15 +96,19 @@ class minidc():
                 try:
                     val_stack.append(val_stack.pop() + val_stack.pop())
                 except IndexError:
-                    sys.stderr.write("Error: could not perform operation - stack does not contain 2 values\n")
-                    self.revert_stack()   
+                    error = "Error: could not perform operation - stack does not contain 2 values\n"
+                    sys.stderr.write(error)
+                    self.add_err_to_log(error)
+                    self.revert_stack()
                                
             elif curr_cmd == '-':
                 #Subtract the second number in the stack from the top number in the stack and push the result
                 try:
                     val_stack.append(val_stack.pop() - val_stack.pop())   
                 except IndexError:
-                    sys.stderr.write("Error: could not perform operation - stack does not contain 2 values\n")
+                    error = "Error: could not perform operation - stack does not contain 2 values\n"
+                    sys.stderr.write(error)
+                    self.add_err_to_log(error)
                     self.revert_stack()     
                      
             elif curr_cmd == '*':
@@ -107,20 +116,32 @@ class minidc():
                 try:
                     val_stack.append(val_stack.pop() * val_stack.pop()) 
                 except IndexError:
-                    sys.stderr.write("Error: could not perform operation - stack does not contain 2 values\n")
+                    error = "Error: could not perform operation - stack does not contain 2 values\n"
+                    sys.stderr.write(error)
+                    self.add_err_to_log(error)
                     self.revert_stack()   
                        
             elif curr_cmd == '/':
                 # Divide the top two numbers in the stack and push the result
                 try:
-                    val_stack.append(val_stack.pop() / val_stack.pop())
+                    try:
+                        val_stack.append(val_stack.pop() / val_stack.pop())
+                    except ZeroDivisionError:
+                        error = "Error: cannot divide by zero\n"
+                        sys.stderr.write(error)
+                        self.add_err_to_log(error)
+                        self.revert_stack()                        
                 except IndexError:
-                    sys.stderr.write("Error: could not perform operation - stack does not contain 2 values\n")
+                    error = "Error: could not perform operation - stack does not contain 2 values\n"
+                    sys.stderr.write(error)
+                    self.add_err_to_log(error)
                     self.revert_stack()  
                            
             else:
                 # Program should never get here, as error cases are handled in push_value
-                sys.stderr.write("Unexpected error")
+                error = "Unexpected error"
+                sys.stderr.write(error)
+                self.add_err_to_log(error)
                 self.revert_stack
                 return False
         
@@ -138,16 +159,28 @@ class minidc():
            
         return user_input
     
-    def runDC(self, input):    
+    def runDC(self, *input_vals):    
         run = True
-        error = False 
+        error = 0                    
+        f = open('err.txt', 'w')
+        # Write stderr to a file instead of the console  
+        sys.stderr = f 
+        
+        # Make sure there wasn't too many arguments provided
+        if len(input_vals) > 1:
+            sys.stderr.write("Incorrect usage: too many arguments\n")
+            f.close()
+            return -1
+        else:
+            input = input_vals[0]
         
         if input == '':
             # No arguments = input taken from stdin
             print "Welcome to minidc."
+            sys.stderr = sys.stdout
             
             while run:  
-                error = False                     
+                error = 0                     
                 # Get the user's input and split it up into a list of arguments (delimiter is whitespace)
                 sys.stdout.write('>>')
                 user_input = raw_input().split()
@@ -155,24 +188,27 @@ class minidc():
                 
                 # Add the input values to the stack
                 for element in user_input:
-                    if not error:
-                        error = self.push_value(element)     
+                    if error >= 0:
+                        error = self.push_value(element) 
     
                 run = self.handle_input() 
-            print "\nAfter execution, the stack contains the following values: %s" % str(val_stack)      
+            print "\nAfter execution, the stack contains the following values: %s" % str(val_stack)
+            f.close()       
             return val_stack #returns the full stack once operation is done
         
         else:
-            # Argument provided = input taken from test program   
+            # Argument provided = input taken from test program  
+    
             
             # The input should be a string where individual commands are separated by a the character "|"
-            # Example - the input "1 2 + | 3 4 +" simulates a user entering the command "1 2 +" followed by the command "3 4 +"            
+            # Example - the input "1 2 + | 3 4 +" simulates a user entering the command "1 2 +" followed by the command "3 4 +"                    
             user_input = self.parse_input(input)
     
             for command in user_input:
+                error = 0
                 # Add the individual values to the stack
                 for element in command:
-                    if not error:
+                    if error >= 0:
                         error = self.push_value(element)          
                 
                 # Reverse the input command for display in the console, then change it back before handling the command
@@ -180,7 +216,8 @@ class minidc():
 #                print ">> %s" % str( ' '.join(command) )
 #                command.reverse()
                 self.handle_input() 
-#                print "Actual: %s\n" % str(val_stack) ###DEBUG###        
+#                print "Actual: %s\n" % str(val_stack) ###DEBUG### 
+            f.close()            
             return val_stack #returns the full stack once operation is done
         
     def update_stack(self):
@@ -211,11 +248,24 @@ class minidc():
         cmd_stack = []
         cmd_stack_old = []
     
+    def add_err_to_log(self, err_entry):
+        global err
+        err.append(err_entry)
+        
+    def read_err_log(self):
+        global err
+        return err
+    
+    def clear_err_log(self):
+        global err
+        err = []
+    
 valid_commands = ['p', 'n', 'f', '+', '-', '*', '/', 'exit']
 val_stack = []
 val_stack_old = []
 cmd_stack = []
 cmd_stack_old = []
+err = []
 
 if __name__ == "__main__":
     mdc = minidc()
@@ -224,4 +274,4 @@ if __name__ == "__main__":
     elif len(sys.argv) == 1:
         mdc.runDC('')          # Run from interactive user input
     else:
-        print "Unexpected error. Check your arguments"
+        sys.stderr.write("Incorrect usage. Check your arguments\n")
