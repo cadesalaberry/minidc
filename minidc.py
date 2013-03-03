@@ -64,38 +64,68 @@ class minidc():
             if curr_cmd == 'exit':  
                 # Exit the application
                 print "Goodbye." 
-                return False            
-            elif curr_cmd == 'P':
+                return False  
+                      
+            elif curr_cmd == 'p':
                 # Print the top number in the stack without popping it
-                print str(val_stack[-1])            
+                try:
+                    print str(val_stack[-1])    
+                except IndexError:
+                    sys.stderr.write("Error: stack is empty\n")
+                    self.revert_stack()  
+                            
             elif curr_cmd == 'n':
                 # Print the top number in the stack and pop it
-                print str(val_stack.pop())            
+                try:
+                    print str(val_stack.pop()) 
+                except IndexError:
+                    sys.stderr.write("Error: stack is empty\n")
+                    self.revert_stack()     
+                             
             elif curr_cmd == 'f':
                 # Print the whole stack
-                print str(val_stack)            
+                print str(val_stack)  
+                          
             elif curr_cmd == '+':
                 # Add the top two numbers in the stack and push the result
-                val_stack.append(val_stack.pop() + val_stack.pop())               
+                try:
+                    val_stack.append(val_stack.pop() + val_stack.pop())
+                except IndexError:
+                    sys.stderr.write("Error: could not perform operation - stack does not contain 2 values\n")
+                    self.revert_stack()   
+                               
             elif curr_cmd == '-':
                 #Subtract the second number in the stack from the top number in the stack and push the result
-                val_stack.append(val_stack.pop() - val_stack.pop())            
+                try:
+                    val_stack.append(val_stack.pop() - val_stack.pop())   
+                except IndexError:
+                    sys.stderr.write("Error: could not perform operation - stack does not contain 2 values\n")
+                    self.revert_stack()     
+                     
             elif curr_cmd == '*':
                 # Multiply the top two numbers in the stack and push the result
-                val_stack.append(val_stack.pop() * val_stack.pop())          
+                try:
+                    val_stack.append(val_stack.pop() * val_stack.pop()) 
+                except IndexError:
+                    sys.stderr.write("Error: could not perform operation - stack does not contain 2 values\n")
+                    self.revert_stack()   
+                       
             elif curr_cmd == '/':
                 # Divide the top two numbers in the stack and push the result
-                val_stack.append(val_stack.pop() / val_stack.pop())             
+                try:
+                    val_stack.append(val_stack.pop() / val_stack.pop())
+                except IndexError:
+                    sys.stderr.write("Error: could not perform operation - stack does not contain 2 values\n")
+                    self.revert_stack()  
+                           
             else:
                 # Program should never get here, as error cases are handled in push_value
                 sys.stderr.write("Unexpected error")
-                val_stack = val_stack_old[:]
-                cmd_stack = cmd_stack_old[:]
+                self.revert_stack
                 return False
         
         # Save the current state of the stack
-        val_stack_old = val_stack[:] 
-        cmd_stack_old = cmd_stack[:]                  
+        self.update_stack()                 
         return True
     
     def parse_input(self, input):
@@ -153,7 +183,25 @@ class minidc():
 #                print "Actual: %s\n" % str(val_stack) ###DEBUG###        
             return val_stack #returns the full stack once operation is done
         
+    def update_stack(self):
+        global val_stack
+        global val_stack_old
+        global cmd_stack
+        global cmd_stack_old
+        val_stack_old = val_stack[:] 
+        cmd_stack_old = cmd_stack[:] 
+    
+    def revert_stack(self):
+        # Reverts the stack to the previously saved state
+        global val_stack
+        global val_stack_old
+        global cmd_stack
+        global cmd_stack_old
+        val_stack = val_stack_old[:]
+        cmd_stack = cmd_stack_old[:]        
+        
     def clear_stack(self):   
+        # Clears the stack completely       
         global val_stack
         global val_stack_old
         global cmd_stack
@@ -172,8 +220,8 @@ cmd_stack_old = []
 if __name__ == "__main__":
     mdc = minidc()
     if len(sys.argv) == 2:
-        mdc.runDC(sys.argv[1]) # Run from test program
+        mdc.runDC(sys.argv[1]) # Run from input string
     elif len(sys.argv) == 1:
-        mdc.runDC('')          # Run from user input
+        mdc.runDC('')          # Run from interactive user input
     else:
         print "Unexpected error. Check your arguments"
