@@ -70,7 +70,9 @@ class minidc():
             elif curr_cmd == 'p':
                 # Print the top number in the stack without popping it
                 try:
-                    print str(val_stack[-1])    
+                    output = str(val_stack[-1])
+                    print output  
+                    self.add_output_to_log(output) 
                 except IndexError:
                     error = "Error: stack is empty\n"
                     sys.stderr.write(error)
@@ -80,7 +82,9 @@ class minidc():
             elif curr_cmd == 'n':
                 # Print the top number in the stack and pop it
                 try:
-                    print str(val_stack.pop()) 
+                    output = str(val_stack.pop())
+                    print output
+                    self.add_output_to_log(output) 
                 except IndexError:
                     error = "Error: stack is empty\n"
                     sys.stderr.write(error)
@@ -89,7 +93,9 @@ class minidc():
                              
             elif curr_cmd == 'f':
                 # Print the whole stack
-                print str(val_stack)  
+                output = str(val_stack) 
+                print output
+                self.add_output_to_log(output)
                           
             elif curr_cmd == '+':
                 # Add the top two numbers in the stack and push the result
@@ -162,14 +168,23 @@ class minidc():
     def runDC(self, *input_vals):    
         run = True
         error = 0                    
-        f = open('err.txt', 'w')
-        # Write stderr to a file instead of the console  
-        sys.stderr = f 
+        f1 = open('stderr.txt', 'w')
+        f2 = open('stdout.txt', 'w')
+        
+        # Temp variables to save state of stdout/stderr
+        t1 = sys.stderr
+        t2 = sys.stdout  
+        # Write stderr/stdout to a file instead of the console
+        sys.stderr = f1 
+        sys.stdout = f2
         
         # Make sure there wasn't too many arguments provided
         if len(input_vals) > 1:
             sys.stderr.write("Incorrect usage: too many arguments\n")
-            f.close()
+            sys.stderr = t1
+            sys.stdout = t2
+            f1.close()  
+            f2.close()
             return -1
         else:
             input = input_vals[0]
@@ -177,7 +192,12 @@ class minidc():
         if input == '':
             # No arguments = input taken from stdin
             print "Welcome to minidc."
-            sys.stderr = sys.stdout
+            
+            # Print to console instead of file
+            sys.stderr = t1
+            sys.stdout = t2
+            f1.close()  
+            f2.close()    
             
             while run:  
                 error = 0                     
@@ -192,8 +212,7 @@ class minidc():
                         error = self.push_value(element) 
     
                 run = self.handle_input() 
-            print "\nAfter execution, the stack contains the following values: %s" % str(val_stack)
-            f.close()       
+            print "\nAfter execution, the stack contains the following values: %s" % str(val_stack) 
             return val_stack #returns the full stack once operation is done
         
         else:
@@ -217,7 +236,10 @@ class minidc():
 #                command.reverse()
                 self.handle_input() 
 #                print "Actual: %s\n" % str(val_stack) ###DEBUG### 
-            f.close()            
+            sys.stderr = t1
+            sys.stdout = t2
+            f1.close()  
+            f2.close()    
             return val_stack #returns the full stack once operation is done
         
     def update_stack(self):
@@ -259,6 +281,18 @@ class minidc():
     def clear_err_log(self):
         global err
         err = []
+        
+    def add_output_to_log(self, stdout_entry):
+        global output
+        output.append(stdout_entry)
+        
+    def read_output_log(self):
+        global output
+        return output
+    
+    def clear_output_log(self):
+        global output
+        output = []
     
 valid_commands = ['p', 'n', 'f', '+', '-', '*', '/', 'exit']
 val_stack = []
@@ -266,6 +300,7 @@ val_stack_old = []
 cmd_stack = []
 cmd_stack_old = []
 err = []
+output = []
 
 if __name__ == "__main__":
     mdc = minidc()
