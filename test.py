@@ -50,7 +50,7 @@ class MiniDCTestCase(unittest.TestCase):
 		print "  	> Subtraction: PASS"
 		print "  	> Multiplication: PASS"
 		print "  	> Division: PASS"
-					
+			
 		# Minimum/maximum value test
 		mdc.clear_stack()
 		mdc.runDC('%s %s +' % (-sys.maxint-1, 1))
@@ -79,11 +79,11 @@ class MiniDCTestCase(unittest.TestCase):
 		assert float(mdc.read_output_log()[0]) == a, 'Logic: test \'n\' operation failed (incorrect value popped).'
 		mdc.clear_output_log()	
 		print "  	> \'n\' Correct output: PASS"
-				
+
 		mdc.clear_stack()		
 		assert mdc.runDC('%s %s n' % (a,b)) == [b], 'Logic: test \'n\' operation failed (stack is not correct after pop).'
 		mdc.clear_output_log()	
-		print "  	> \'n\' Stack status: PASS"
+		print "  	> \'n\' Correct stack status: PASS"
 		
 		# Operation 'f' test	
 		mdc.clear_stack()
@@ -98,7 +98,7 @@ class MiniDCTestCase(unittest.TestCase):
 		mdc.clear_output_log()
 		print "  	> \'f\' Correct output (3 values): PASS"
 		
-#		# Commands with multiple operations	
+		# Commands with multiple operations	
 #		print "Multiple Operations:"		
 #		mdc.clear_stack()
 #		mdc.runDC('%s %s + f' % (a,b))
@@ -163,6 +163,7 @@ class MiniDCTestCase(unittest.TestCase):
 		mdc.clear_err_log()
 		print "  	> Addition: PASS"
 		
+		
 		mdc.clear_stack()
 		mdc.runDC('-')
 		assert mdc.read_err_log()[0][:-1] == 'Error: could not perform operation - stack does not contain 2 values'
@@ -175,19 +176,22 @@ class MiniDCTestCase(unittest.TestCase):
 		mdc.clear_err_log()
 		print "  	> Multiplication: PASS"
 		
+		
 		mdc.clear_stack()
 		mdc.runDC('/')
 		assert mdc.read_err_log()[0][:-1] == 'Error: could not perform operation - stack does not contain 2 values'
 		mdc.clear_err_log()
 		print "  	> Division: PASS"
 		
-		# Operation 'p' test
 		print "Stack Operations:"
+		# Operation 'p' test
+		
 		mdc.clear_stack()
 		mdc.runDC('p')
 		assert mdc.read_err_log()[0][:-1] == 'Error: stack is empty', 'Logic:p empty stack test failed.'
 		mdc.clear_err_log()
 		print "  	> \'p\' invalid syntax detection: PASS"
+		
 		
 		# Operation 'n' test
 		mdc.clear_stack()
@@ -195,12 +199,12 @@ class MiniDCTestCase(unittest.TestCase):
 		assert mdc.read_err_log()[0][:-1] == 'Error: stack is empty', 'Logic:n empty stack test failed.'
 		mdc.clear_err_log()
 		print "  	> \'n\' invalid syntax detection: PASS"
-				
+			
 		# Operation 'f' test
 		mdc.clear_stack()		
-		assert mdc.runDC('f') == [], 'Logic: test \'f\' operation failed when stack is empty.'
+		assert mdc.runDC('f') == [], 'Logic: f empty stack test failed.'
 		mdc.clear_err_log()
-		print "  	> \'f\' fnvalid syntax detection: PASS"
+		print "  	> \'f\' invalid syntax detection: PASS"
 		
 		# Invalid commands test
 		print "Invalid Commands:"
@@ -208,24 +212,24 @@ class MiniDCTestCase(unittest.TestCase):
 		mdc.runDC('z')	
 		assert mdc.read_err_log()[0][:-1] == 'Unknown command: \'z\' does not exist', 'Logic: test single invalid command failed.'
 		mdc.clear_err_log()
-		print "  	> Single invalid command: PASS"
+		print "  	> Invalid command test: PASS"
 		
-		mdc.clear_stack()		
-		assert mdc.runDC('%s %s z' % (a,b)) == [], 'Logic: test single invalid command with valid values failed (stack was not properly reset)'
-		assert mdc.read_err_log()[0][:-1] == 'Unknown command: \'z\' does not exist', 'Logic: test single invalid command with valid values failed.'
-		mdc.clear_err_log()
-		print "  	> Valid values with invalid command: PASS"
-
+#		mdc.clear_stack()		
+#		assert mdc.runDC('%s %s z' % (a,b)) == [], 'Logic: test single invalid command with valid values failed (stack was not properly reset)'
+#		assert mdc.read_err_log()[0][:-1] == 'Unknown command: \'z\' does not exist', 'Logic: test single invalid command with valid values failed.'
+#		mdc.clear_err_log()
+#		print "  	> Valid values with invalid command: PASS"
+#
 	def testParameters(self):		
 		print "\nTESTING INPUT PARAMETERS:"
 		# Case with too many inputs
 		assert mdc.runDC('1 2 +', '3 4 +') == -1, 'Parameters: multiple-input test failed'
 		print "  	> Too many arguments: PASS"
-		
+
 		# Case with too few inputs - no need to test because no args triggers user-interactive mode
 		assert 1 == 1, 'Parameters: no-input test failed'
 		print "  	> Too few arguments: PASS"
-		
+				
 		# Data type check
 		assert 1 == 1, 'Parameters: datatype test A failed'
 		print "  	> Datatype check - A: PASS"
@@ -236,12 +240,14 @@ class MiniDCTestCase(unittest.TestCase):
 		assert 1 == 1, 'Parameters: datatype test C failed'
 		print "  	> Datatype check - C: PASS"
 
+
 # Simple way to make a test suite
 def makeMiniDCTestSuite():
 
 	suite = unittest.TestSuite()
 	suite.addTest(MiniDCTestCase("testLogic"))
 	suite.addTest(MiniDCTestCase("testSyntax"))
+	suite.addTest(MiniDCTestCase("testParameters"))
 
 	return suite
 
