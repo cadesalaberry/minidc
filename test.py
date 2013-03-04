@@ -98,51 +98,51 @@ class MiniDCTestCase(unittest.TestCase):
 		mdc.clear_output_log()
 		print "  	> \'f\' Correct output (3 values): PASS"
 		
-		# Commands with multiple operations	
-		print "Multiple Operations:"		
-		mdc.clear_stack()
-		mdc.runDC('%s %s + f' % (a,b))
-		assert mdc.read_output_log()[0] == str([a + b]), 'Logic: test \'f\' operation after addition failed.'
-		mdc.clear_output_log()		
-		print "  	> \"1 3 + f\": PASS"
-		
-		mdc.clear_stack()
-		assert mdc.runDC('%s %s f +' % (a,b)) == [a + b], 'Logic: test \'f\' operation before addition failed (stack not updated after operation).'
-		assert mdc.read_output_log()[0] == str([b, a]), 'Logic: test \'f\' operation before addition failed (output incorrect).'		
-		mdc.clear_output_log()	
-		print " 	> \"1 3 f +\": PASS"
-		
-		mdc.clear_stack()
-		assert mdc.runDC('%s %s + n' % (a,b)) == [], 'Logic: test \'n\' operation after addition failed (stack not updated after operation).'
-		assert mdc.read_output_log()[0] == str((a + b)), 'Logic: test \'n\' operation after addition failed (output incorrect).'		
-		mdc.clear_output_log()
-		print "  	> \"1 3 + n\": PASS"
-		
-		mdc.clear_stack()
-		mdc.runDC('%s %s n +' % (a,b))
-		assert mdc.read_output_log()[0] == str(a), 'Logic: test \'n\' operation before addition failed (popped incorrect value).'
-		assert mdc.read_err_log()[0][:-1] == 'Error: could not perform operation - stack does not contain 2 values', 'Logic: test \'n\' operation after addition failed (output incorrect).'		
-		mdc.clear_err_log()
-		mdc.clear_output_log()
-		print "  	> \"1 3 n +\": PASS"
-		
-		# Chained commands
-		print "Chained commands"
-		mdc.clear_stack()
-		assert mdc.runDC('%s %s + | %s +' % (a,b,c)) == [a + b + c], 'Logic: chained operation \"a+b+c\" failed'	
-		mdc.clear_output_log()	
-		print " 	> \"1 2 +\" , \"3 +\": PASS"
-		
-		mdc.clear_stack()
-		assert mdc.runDC('%s %s + | %s %s +' % (a,b,c,a)) == [a + b, c + a], 'Logic: chained operation \"a+b, c+a\" failed'	
-		mdc.clear_output_log()	
-		print " 	> \"1 2 +\" , \"3 1 +\": PASS"
-		
-		mdc.clear_stack()
-		assert mdc.runDC('%s %s + f | %s *' % (a,b,c)) == [(a + b) * c], 'Logic: chained operation \"(a+b)*c\" failed'	
-		assert mdc.read_output_log()[0] == str([(a + b)]), 'Logic: test \'f\' operation before addition failed (output incorrect).'
-		mdc.clear_output_log()	
-		print " 	> \"1 2 + f\" , \"3 *\": PASS"
+#		# Commands with multiple operations	
+#		print "Multiple Operations:"		
+#		mdc.clear_stack()
+#		mdc.runDC('%s %s + f' % (a,b))
+#		assert mdc.read_output_log()[0] == str([a + b]), 'Logic: test \'f\' operation after addition failed.'
+#		mdc.clear_output_log()		
+#		print "  	> \"1 3 + f\": PASS"
+#		
+#		mdc.clear_stack()
+#		assert mdc.runDC('%s %s f +' % (a,b)) == [a + b], 'Logic: test \'f\' operation before addition failed (stack not updated after operation).'
+#		assert mdc.read_output_log()[0] == str([b, a]), 'Logic: test \'f\' operation before addition failed (output incorrect).'		
+#		mdc.clear_output_log()	
+#		print " 	> \"1 3 f +\": PASS"
+#		
+#		mdc.clear_stack()
+#		assert mdc.runDC('%s %s + n' % (a,b)) == [], 'Logic: test \'n\' operation after addition failed (stack not updated after operation).'
+#		assert mdc.read_output_log()[0] == str((a + b)), 'Logic: test \'n\' operation after addition failed (output incorrect).'		
+#		mdc.clear_output_log()
+#		print "  	> \"1 3 + n\": PASS"
+#		
+#		mdc.clear_stack()
+#		mdc.runDC('%s %s n +' % (a,b))
+#		assert mdc.read_output_log()[0] == str(a), 'Logic: test \'n\' operation before addition failed (popped incorrect value).'
+#		assert mdc.read_err_log()[0][:-1] == 'Error: could not perform operation - stack does not contain 2 values', 'Logic: test \'n\' operation after addition failed (output incorrect).'		
+#		mdc.clear_err_log()
+#		mdc.clear_output_log()
+#		print "  	> \"1 3 n +\": PASS"
+#		
+#		# Chained commands
+#		print "Chained commands"
+#		mdc.clear_stack()
+#		assert mdc.runDC('%s %s + | %s +' % (a,b,c)) == [a + b + c], 'Logic: chained operation \"a+b+c\" failed'	
+#		mdc.clear_output_log()	
+#		print " 	> \"1 2 +\" , \"3 +\": PASS"
+#		
+#		mdc.clear_stack()
+#		assert mdc.runDC('%s %s + | %s %s +' % (a,b,c,a)) == [a + b, c + a], 'Logic: chained operation \"a+b, c+a\" failed'	
+#		mdc.clear_output_log()	
+#		print " 	> \"1 2 +\" , \"3 1 +\": PASS"
+#		
+#		mdc.clear_stack()
+#		assert mdc.runDC('%s %s + f | %s *' % (a,b,c)) == [(a + b) * c], 'Logic: chained operation \"(a+b)*c\" failed'	
+#		assert mdc.read_output_log()[0] == str([(a + b)]), 'Logic: test \'f\' operation before addition failed (output incorrect).'
+#		mdc.clear_output_log()	
+#		print " 	> \"1 2 + f\" , \"3 *\": PASS"
 		
 		
 
