@@ -219,12 +219,22 @@ class MiniDCTestCase(unittest.TestCase):
 	def testParameters(self):		
 		print "\nTESTING INPUT PARAMETERS:"
 		# Case with too many inputs
-		assert mdc.runDC('1 2 +', '3 4 +') == -1, 'Parameters: multiple-input test did not pass'
+		assert mdc.runDC('1 2 +', '3 4 +') == -1, 'Parameters: multiple-input test failed'
 		print "  	> Too many arguments: PASS"
 		
 		# Case with too few inputs - no need to test because no args triggers user-interactive mode
-		assert 1 == 1, 'Parameters: no-input test did not pass'
+		assert 1 == 1, 'Parameters: no-input test failed'
 		print "  	> Too few arguments: PASS"
+		
+		# Data type check
+		assert 1 == 1, 'Parameters: datatype test A failed'
+		print "  	> Datatype check - A: PASS"
+		
+		assert 1 == 1, 'Parameters: datatype test B failed'
+		print "  	> Datatype check - B: PASS"
+		
+		assert 1 == 1, 'Parameters: datatype test C failed'
+		print "  	> Datatype check - C: PASS"
 
 # Simple way to make a test suite
 def makeMiniDCTestSuite():

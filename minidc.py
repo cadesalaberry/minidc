@@ -9,14 +9,6 @@ import sys
 import os
 
 class minidc():
-    
-#    def __init__(self):
-#        if len(user_input) == 2:
-#            return self.runDC(user_input[1]) # Run from test program
-#        elif len(user_input) == 1:
-#            return self.runDC('')          # Run from user input
-#        else:
-#            print "Error: %s " % user_input
 
     # Pushes a value onto the appropriate stack. Returns True if there is an error, False otherwise
     def push_value(self, val):
